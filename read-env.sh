@@ -6,9 +6,15 @@ function help() {
 
 # Read environment variable $1 from file $2
 function read_env_var_from_file() {
-  var=$(grep -w $1 $2 | xargs)
+  # Get the last exact match
+  var=$(grep -w "^$1" $2 | tail -1)
   IFS="=" read -ra var <<< "$var"
-  echo ${var[1]}
+  if [ -z ${var[0]} ]; then
+    # Environment variable not found in file, try looking up shell
+    echo ${!1}
+  else
+    echo ${var[1]}
+  fi
 }
 
 function read_env_var() {
