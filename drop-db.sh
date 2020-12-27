@@ -1,5 +1,25 @@
 #!/bin/bash
 
+function prompt() {
+  while true; do
+    echo "This will drop the database and is IRREVERSIBLE."
+    echo ""
+    read -p "Are you sure you wish to continue? [y/n]" yn
+    case $yn in
+      [Yy]* )
+        break
+        ;;
+      [Nn]* )
+        echo "Exiting without dropping database..."
+        exit
+        ;;
+      * )
+        echo "Please answer yes or no."
+        ;;
+    esac
+  done
+}
+
 function retrieve() {
   echo $(./read-env.sh $1)
 }
@@ -35,4 +55,5 @@ fi
 
 command="$command -c 'DROP DATABASE $DB_NAME;'"
 
+prompt
 eval $command
